@@ -1,0 +1,13 @@
+# caches Python
+__pycache__/
+*.pyc
+*.pyo
+
+# artefacts de build (si tu packages tes modules)
+dist/
+build/
+*.zip
+*.tar.gz
+
+# dossiers Node éventuels (theme, assets…)
+node_modules/

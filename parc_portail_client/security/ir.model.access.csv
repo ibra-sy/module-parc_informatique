@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_equipement_portal,access.equipement.portal,parc_equipement.model_parc_equipement,base.group_portal,1,0,0,0
+access_contrat_portal,access.contrat.portal,parc_contrat.model_parc_contrat,base.group_portal,1,0,0,0
+access_facture_portal,access.facture.portal,parc_facturation.model_parc_facture,base.group_portal,1,0,0,0
+access_ticket_portal,access.ticket.portal,parc_intervention.model_parc_intervention,base.group_portal,1,0,1,0

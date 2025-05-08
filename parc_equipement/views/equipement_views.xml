@@ -1,0 +1,64 @@
+<odoo>
+  <!-- Action Équipements -->
+  <record id="action_equipement" model="ir.actions.act_window">
+    <field name="name">Équipements</field>
+    <field name="res_model">parc.equipement</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- Sous-menu équipements (utilise le menu_parc_root du module parc_client) -->
+  <menuitem id="menu_parc_equipements" name="Équipements"
+            parent="parc_client.menu_parc_root"
+            action="action_equipement"/>
+
+  <!-- Vue formulaire équipement -->
+  <record id="view_equipement_form" model="ir.ui.view">
+    <field name="name">parc.equipement.form</field>
+    <field name="model">parc.equipement</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <group>
+            <field name="reference" readonly="1"/>
+            <field name="name"/>
+            <field name="type"/>
+            <field name="etat"/>
+          </group>
+          <group>
+            <field name="marque"/>
+            <field name="modele"/>
+            <field name="numero_serie"/>
+          </group>
+          <group>
+            <field name="client_id"/>
+            <field name="site_id" invisible="not client_id"/>
+          </group>
+          <group>
+            <field name="date_acquisition"/>
+            <field name="garantie_fin"/>
+          </group>
+          <group>
+            <field name="description"/>
+          </group>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- Vue liste équipement -->
+  <record id="view_equipement_tree" model="ir.ui.view">
+    <field name="name">parc.equipement.tree</field>
+    <field name="model">parc.equipement</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="reference"/>
+        <field name="name"/>
+        <field name="type"/>
+        <field name="etat"/>
+        <field name="client_id"/>
+        <field name="site_id"/>
+      </list>
+    </field>
+  </record>
+</odoo>

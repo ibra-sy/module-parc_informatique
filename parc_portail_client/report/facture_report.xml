@@ -1,0 +1,13 @@
+<odoo>
+  <template id="report_facture_portal" name="Facture (Portail)">
+    <t t-call="web.external_layout">
+      <div class="page">
+        <h2>Facture <t t-esc="doc.name"/></h2>
+        <p>Date : <t t-esc="doc.date_facture"/></p>
+        <p>Client : <t t-esc="doc.client_id.name"/></p>
+        <p>Montant : <t t-esc="doc.montant"/> XOF</p>
+        <p>Statut : <t t-esc="doc.etat"/></p>
+      </div>
+    </t>
+  </template>
+</odoo>

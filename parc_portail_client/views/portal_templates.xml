@@ -1,0 +1,195 @@
+<odoo>
+  <data>
+
+    <!-- ============ DASHBOARD HOME est dans portal_menu.xml ============ -->
+
+    <!-- ÉQUIPEMENTS  -->
+    <template id="portal_my_equipments" name="Portail – Équipements">
+      <t t-call="portal.portal_layout">
+        <div class="container mt-4">
+          <h2>Mes équipements</h2>
+          <table class="table table-striped">
+            <thead>
+              <tr><th>Désignation</th><th>Type</th><th>État</th><th>Garantie</th></tr>
+            </thead>
+            <tbody>
+              <t t-foreach="equipments" t-as="eq">
+                <tr>
+                  <td><t t-esc="eq.name"/></td>
+                  <td><t t-esc="eq.type"/></td>
+                  <td><t t-esc="eq.etat"/></td>
+                  <td><t t-esc="eq.garantie_fin"/></td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+        </div>
+      </t>
+    </template>
+
+    <!-- CONTRATS -->
+    <template id="portal_my_contracts" name="Portail – Contrats">
+      <t t-call="portal.portal_layout">
+        <div class="container mt-4">
+          <h2>Mes contrats</h2>
+          <table class="table table-hover">
+            <thead>
+              <tr><th>Référence</th><th>Type</th><th>Période</th><th>Statut</th></tr>
+            </thead>
+            <tbody>
+              <t t-foreach="contracts" t-as="ct">
+                <tr>
+                  <td><t t-esc="ct.name"/></td>
+                  <td><t t-esc="ct.type_contrat"/></td>
+                  <td><t t-esc="ct.date_debut"/> → <t t-esc="ct.date_fin"/></td>
+                  <td><t t-esc="ct.statut"/></td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+        </div>
+      </t>
+    </template>
+
+    <!-- FACTURES -->
+    <template id="portal_my_invoices" name="Portail – Factures">
+      <t t-call="portal.portal_layout">
+        <div class="container mt-4">
+          <h2>Mes factures</h2>
+          <table class="table">
+            <thead>
+              <tr><th>Réf.</th><th>Date</th><th>Montant (XOF)</th><th>Statut</th><th></th></tr>
+            </thead>
+            <tbody>
+              <t t-foreach="invoices" t-as="inv">
+                <tr>
+                  <td><t t-esc="inv.name"/></td>
+                  <td><t t-esc="inv.date_facture"/></td>
+                  <td><t t-esc="inv.montant"/></td>
+                  <td><t t-esc="inv.etat"/></td>
+                  <td>
+                    <a t-att-href="'/my/invoices/%s/pdf' % inv.id"
+                       class="btn btn-sm btn-outline-primary">PDF</a>
+                  </td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+        </div>
+      </t>
+    </template>
+
+    <!-- TICKETS-->
+    <template id="portal_my_tickets" name="Portail – Tickets">
+      <t t-call="portal.portal_layout">
+        <div class="container mt-4">
+          <div class="d-flex justify-content-between">
+            <h2>Mes tickets d'intervention</h2>
+            <a href="/my/tickets/new" class="btn btn-success">Nouveau ticket</a>
+          </div>
+          <table class="table">
+            <thead>
+              <tr><th>Réf.</th><th>Équipement</th><th>Statut</th><th>Ouverture</th></tr>
+            </thead>
+            <tbody>
+              <t t-foreach="tickets" t-as="tk">
+                <tr>
+                  <td><t t-esc="tk.name"/></td>
+                  <td><t t-esc="tk.equipement_id.name"/></td>
+                  <td><t t-esc="tk.etat"/></td>
+                  <td><t t-esc="tk.date_ouverture"/></td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+        </div>
+      </t>
+    </template>
+
+    <!-- FORMULAIRE NOUVEAU TICKET -->
+    <template id="portal_ticket_new" name="Portail – Nouveau ticket">
+      <t t-call="portal.portal_layout">
+        <div class="container mt-4">
+          <h2>Nouveau ticket</h2>
+          <form method="post">
+            <div class="mb-3">
+              <label class="form-label">Équipement concerné</label>
+              <select class="form-select" name="equipement_id" required="required">
+                <t t-foreach="equipments" t-as="eq">
+                  <option t-att-value="eq.id"><t t-esc="eq.name"/></option>
+                </t>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description de l'incident</label>
+              <textarea name="description" class="form-control" rows="4"
+                        required="required"></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit">Envoyer</button>
+            <a href="/my/tickets" class="btn btn-link">Annuler</a>
+          </form>
+        </div>
+      </t>
+    </template>
+
+    <!-- PROFIL -->
+    <template id="portal_my_profile" name="Portail – Profil">
+      <t t-call="portal.portal_layout">
+        <div class="container mt-4">
+          <h2>Mon profil</h2>
+          <form method="post">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Nom</label>
+                <input type="text" class="form-control" name="name"
+                       t-att-value="partner.name" required="required"/>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">E-mail</label>
+                <input type="email" class="form-control" name="email"
+                       t-att-value="partner.email"/>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Téléphone</label>
+                <input type="text" class="form-control" name="phone"
+                       t-att-value="partner.phone"/>
+              </div>
+              <div class="col-md-8 mb-3">
+                <label class="form-label">Rue</label>
+                <input type="text" class="form-control" name="street"
+                       t-att-value="partner.street"/>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Ville</label>
+                <input type="text" class="form-control" name="city"
+                       t-att-value="partner.city"/>
+              </div>
+              <div class="col-md-2 mb-3">
+                <label class="form-label">Code postal</label>
+                <input type="text" class="form-control" name="zip"
+                       t-att-value="partner.zip"/>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Pays</label>
+                <select class="form-select" name="country_id">
+                  <option value=""/>
+                  <t t-foreach="countries" t-as="c">
+                    <option t-att-value="c.id"
+                      t-att-selected="partner.country_id.id == c.id and 'selected' or None">
+                      <t t-esc="c.name"/>
+                    </option>
+                  </t>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-primary" type="submit">Mettre à jour</button>
+            <a href="/my" class="btn btn-link">Retour</a>
+          </form>
+        </div>
+      </t>
+    </template>
+
+  </data>
+</odoo>
