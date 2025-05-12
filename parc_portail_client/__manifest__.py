@@ -1,27 +1,17 @@
-# -*- coding: utf-8 -*-
 {
     "name": "Portail Client – Gestion de Parc",
     "version": "1.0.0",
     "category": "Website",
-    "summary": "Portail client : équipements, contrats, factures (PDF) et tickets d’intervention.",
-    "description": """
-Ce module ajoute un portail dédié aux clients :
- • tableau de bord personnalisé
- • consultation des équipements, contrats, factures
- • téléchargement PDF des factures
- • création & suivi des tickets d’intervention
- • page Mon profil (mise à jour des coordonnées)
-""",
+    "summary": "Portail client : équipements, contrats, factures et tickets d’intervention",
+    "description": "Tableau de bord dédié aux clients créés dans le module parc_client.",
     "author": "Dev SYLLA",
-    "website": "https://votre-site-web.com",
     "license": "LGPL-3",
     "depends": [
-        "base",
-        "web",
         "portal",
         "website",
         "mail",
-        "account",           # pour les PDF et l’état des factures
+        "account",
+        # Modules fonctionnels
         "parc_client",
         "parc_equipement",
         "parc_contrat",
@@ -30,11 +20,11 @@ Ce module ajoute un portail dédié aux clients :
     ],
     "data": [
         "security/ir.model.access.csv",
-        "views/portal_menu.xml",
+        "security/record_rule_portal.xml",
         "views/portal_templates.xml",
+        "views/portal_home_inherit.xml",
         "report/facture_report.xml",
     ],
     "installable": True,
-    "application": True,
-    "auto_install": False,
+    "application": False,
 }

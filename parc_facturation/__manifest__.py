@@ -1,16 +1,24 @@
+# custom_addons/parc_facturation/__manifest__.py
 {
-    'name': 'Facturation Automatisée - Parc Informatique',
-    'version': '1.0',
-    'category': 'Services/Infogérance',
-    'summary': 'Génère automatiquement les factures liées aux contrats',
-    'author': 'Sylla Dev',
-    'depends': ['base', 'mail', 'parc_contrat'],
-    'data': [
-        'security/ir.model.access.csv',
-        'data/facture_sequence.xml',
-        'data/cron_facturation.xml',
-        'views/facture_views.xml',
+    "name": "Facturation Automatisée - Parc Informatique",
+    "version": "1.0.1",
+    "summary": "Génère automatiquement les factures liées aux contrats d’infogérance",
+    "category": "Services/Infogérance",
+    "author": "Sylla Dev",
+    "license": "LGPL-3",
+    "depends": [
+        "base",
+        "mail",
+        "parc_contrat",  
+        "auth_signup",
     ],
-    'installable': True,
-    'application': False,
+    "data": [
+        "security/ir.model.access.csv",
+        "data/facture_sequence.xml",
+        #"data/cron_facturation.xml",
+        "data/mail_template.xml",
+        "views/facture_views.xml",
+    ],
+    "installable": True,
+    "application": False,
 }

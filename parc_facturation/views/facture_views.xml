@@ -1,46 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-  <record id="action_facture" model="ir.actions.act_window">
-    <field name="name">Factures</field>
-    <field name="res_model">parc.facture</field>
-    <field name="view_mode">list,form</field>
-  </record>
+    <!-- Action Factures -->
+    <record id="action_facture" model="ir.actions.act_window">
+        <field name="name">Factures</field>
+        <field name="res_model">parc.facture</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
-  <menuitem id="menu_factures" name="Factures"
-            parent="parc_client.menu_parc_root"
-            action="action_facture"/>
+    <!-- ───────────── FORMULAIRE ───────────── -->
+    <record id="view_facture_form" model="ir.ui.view">
+        <field name="name">parc.facture.form</field>
+        <field name="model">parc.facture</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="contrat_id" required="1"/>
+                        <field name="client_id" readonly="1"/>
+                        <field name="date_facture"/>
+                        <field name="montant"/>
+                        <field name="etat" widget="statusbar" statusbar_visible="brouillon,envoye,paye"/>
+                        <field name="notes"/>
+                    </group>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-  <record id="view_facture_tree" model="ir.ui.view">
-    <field name="name">facture.tree</field>
-    <field name="model">parc.facture</field>
-    <field name="arch" type="xml">
-      <list>
-        <field name="name"/>
-        <field name="client_id"/>
-        <field name="contrat_id"/>
-        <field name="date_facture"/>
-        <field name="montant"/>
-        <field name="etat"/>
-      </list>
-    </field>
-  </record>
-
-  <record id="view_facture_form" model="ir.ui.view">
-    <field name="name">facture.form</field>
-    <field name="model">parc.facture</field>
-    <field name="arch" type="xml">
-      <form>
-        <sheet>
-          <group>
-            <field name="name"/>
-            <field name="client_id"/>
-            <field name="contrat_id"/>
-            <field name="date_facture"/>
-            <field name="montant"/>
-            <field name="etat"/>
-          </group>
-        </sheet>
-        <chatter/>
-      </form>
-    </field>
-  </record>
+    <!-- ───────────── LISTE ───────────── -->
+    <record id="view_facture_list" model="ir.ui.view">
+        <field name="name">parc.facture.list</field>
+        <field name="model">parc.facture</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="date_facture"/>
+                <field name="montant"/>
+                <field name="etat" widget="statusbar"/>
+            </list>
+        </field>
+    </record>
 </odoo>

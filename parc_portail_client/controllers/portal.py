@@ -1,143 +1,156 @@
-# -*- coding: utf-8 -*-
-from odoo import http, _
-from odoo.http import request
+from odoo import http
+from odoo.http import request, content_disposition
 from odoo.addons.portal.controllers.portal import CustomerPortal
 
 
 class ParcClientPortal(CustomerPortal):
     """
     Portail client : équipements, contrats, factures, tickets + profil.
-
-    IMPORTANT : on travaille désormais avec le modèle `parc.client`
-    (lié à res.partner par partner_id).  Toutes les requêtes filtrent
-    donc sur ce client ― pas directement sur le partenaire connecté.
     """
 
-    # ------------------------------------------------------------------ #
-    #  Helpers
-    # ------------------------------------------------------------------ #
+    # ------------------------------------------------------------------
+    # Helpers
+    # ------------------------------------------------------------------
     def _get_client(self):
-        """Retourne l’enregistrement parc.client associé au partenaire connecté."""
+        """Renvoie l’enregistrement parc.client associé au partenaire connecté (ou False)."""
         return request.env['parc.client'].sudo().search(
             [('partner_id', '=', request.env.user.partner_id.id)], limit=1)
 
+    # ------------------------------------------------------------------
+    # Layout values (tableau de bord)
+    # ------------------------------------------------------------------
     def _prepare_portal_layout_values(self):
-        values = super()._prepare_portal_layout_values()
+        vals = super()._prepare_portal_layout_values()
         client = self._get_client()
+        if not client:
+            return vals  # rien à afficher si lien manquant
 
-        values.update({
-            'equipment_count': request.env['parc.equipement'].sudo().search_count(
-                [('client_id', '=', client.id)]),
-            'contract_count': request.env['parc.contrat'].sudo().search_count(
-                [('client_id', '=', client.id)]),
-            'ticket_count': request.env['parc.intervention'].sudo().search_count(
-                [('client_id', '=', client.id)]),
-            'invoice_count': request.env['parc.facture'].sudo().search_count(
-                [('client_id', '=', client.id)]),
-        })
-        return values
+        domain = [('client_id', '=', client.id)]
+        vals.update(
+            equipment_count=request.env['parc.equipement'].sudo().search_count(domain),
+            contract_count=request.env['parc.contrat'].sudo().search_count(domain),
+            ticket_count=request.env['parc.intervention'].sudo().search_count(domain),
+            invoice_count=request.env['parc.facture'].sudo().search_count(domain),
+        )
+        return vals
 
-    # ------------------------------------------------------------------ #
-    #  Home & listing pages
-    # ------------------------------------------------------------------ #
-    @http.route('/my', type='http', auth='user', website=True)
+    # ------------------------------------------------------------------
+    # Dashboard
+    # ------------------------------------------------------------------
+    @http.route("/my", auth="user", website=True)
     def portal_home(self, **kw):
-        values = self._prepare_portal_layout_values()
-        return request.render('parc_portail_client.portal_my_home', values)
+        client = self._get_client()
+        if not client:
+            return request.redirect('/web/login')
+        return request.render(
+            "parc_portail_client.portal_my_home",
+            self._prepare_portal_layout_values()
+        )
 
-    @http.route('/my/equipments', type='http', auth='user', website=True)
+    # ------------------------------------------------------------------
+    # Listes
+    # ------------------------------------------------------------------
+    @http.route("/my/equipments", auth="user", website=True)
     def portal_equipments(self, **kw):
         client = self._get_client()
-        equipements = request.env['parc.equipement'].sudo().search(
-            [('client_id', '=', client.id)])
-        return request.render('parc_portail_client.portal_my_equipments',
-                              {'equipments': equipements})
+        if not client:
+            return request.redirect('/web/login')
 
-    @http.route('/my/contracts', type='http', auth='user', website=True)
+        equipments = request.env['parc.equipement'].sudo().search(
+            [('client_id', '=', client.id)])
+        return request.render("parc_portail_client.portal_my_equipments",
+                              {"equipments": equipments})
+
+    @http.route("/my/contracts", auth="user", website=True)
     def portal_contracts(self, **kw):
         client = self._get_client()
-        contrats = request.env['parc.contrat'].sudo().search(
-            [('client_id', '=', client.id)])
-        return request.render('parc_portail_client.portal_my_contracts',
-                              {'contracts': contrats})
+        if not client:
+            return request.redirect('/web/login')
 
-    @http.route('/my/invoices', type='http', auth='user', website=True)
+        contracts = request.env['parc.contrat'].sudo().search(
+            [('client_id', '=', client.id)])
+        return request.render("parc_portail_client.portal_my_contracts",
+                              {"contracts": contracts})
+
+    @http.route("/my/invoices", auth="user", website=True)
     def portal_invoices(self, **kw):
         client = self._get_client()
-        factures = request.env['parc.facture'].sudo().search(
-            [('client_id', '=', client.id)])
-        return request.render('parc_portail_client.portal_my_invoices',
-                              {'invoices': factures})
+        if not client:
+            return request.redirect('/web/login')
 
-    @http.route('/my/tickets', type='http', auth='user', website=True)
+        invoices = request.env['parc.facture'].sudo().search(
+            [('client_id', '=', client.id)])
+        return request.render("parc_portail_client.portal_my_invoices",
+                              {"invoices": invoices})
+
+    @http.route("/my/tickets", auth="user", website=True)
     def portal_tickets(self, **kw):
         client = self._get_client()
+        if not client:
+            return request.redirect('/web/login')
+
         tickets = request.env['parc.intervention'].sudo().search(
             [('client_id', '=', client.id)])
-        return request.render('parc_portail_client.portal_my_tickets',
-                              {'tickets': tickets})
+        return request.render("parc_portail_client.portal_my_tickets",
+                              {"tickets": tickets})
 
-    # ------------------------------------------------------------------ #
-    #  Download facture PDF
-    # ------------------------------------------------------------------ #
-    @http.route('/my/invoices/<int:facture_id>/pdf', auth='user', website=True)
-    def portal_invoice_pdf(self, facture_id):
+    # ------------------------------------------------------------------
+    # Téléchargement PDF facture sécurisé
+    # ------------------------------------------------------------------
+    @http.route("/my/invoices/<int:facture_id>/pdf", auth="user", website=True)
+    def facture_pdf(self, facture_id):
         facture = request.env['parc.facture'].sudo().browse(facture_id)
-        if facture.client_id.partner_id.id != request.env.user.partner_id.id:
+        if facture.client_id.partner_id != request.env.user.partner_id:
             return request.not_found()
 
-        pdf, _ = request.env.ref(
-            'parc_portail_client.report_facture_portal')._render_qweb_pdf([facture.id])
-        return request.make_response(
-            pdf, [('Content-Type', 'application/pdf'),
-                  ('Content-Disposition',
-                   'attachment; filename="Facture-%s.pdf"' % facture.name)])
+        pdf, _ = request.env.ref("parc_portail_client.report_facture_portal")._render_qweb_pdf([facture.id])
+        
+        # Réponse PDF avec header correct
+        return request.make_response(pdf, headers=[
+            ('Content-Type', 'application/pdf'),
+            ('Content-Disposition', content_disposition(f"Facture-{facture.name}.pdf")),
+        ])
 
-    # ------------------------------------------------------------------ #
-    #  Création de ticket
-    # ------------------------------------------------------------------ #
-    @http.route('/my/tickets/new', type='http', auth='user',
-                website=True, methods=['GET', 'POST'])
-    def portal_ticket_create(self, **post):
+    # ------------------------------------------------------------------
+    # Nouveau ticket
+    # ------------------------------------------------------------------
+    @http.route("/my/tickets/new", auth="user", methods=["GET", "POST"], website=True)
+    def ticket_new(self, **post):
         client = self._get_client()
-        Equip = request.env['parc.equipement'].sudo()
+        if not client:
+            return request.redirect('/web/login')
 
-        if http.request.httprequest.method == 'POST':
-            equip_id = int(post.get('equipement_id'))
-            desc = post.get('description')
+        if http.request.httprequest.method == "POST":
             request.env['parc.intervention'].sudo().create({
-                'client_id': client.id,
-                'equipement_id': equip_id,
-                'description': desc,
-                'etat': 'brouillon',
+                "client_id": client.id,
+                "equipement_id": int(post.get("equipement_id")),
+                "description": post.get("description"),
+                "etat": "brouillon",
             })
-            return request.redirect('/my/tickets')
+            return request.redirect("/my/tickets")
 
-        equipements = Equip.search([('client_id', '=', client.id)])
-        return request.render('parc_portail_client.portal_ticket_new',
-                              {'equipments': equipements})
+        equipments = request.env['parc.equipement'].sudo().search([('client_id', '=', client.id)])
+        return request.render("parc_portail_client.portal_ticket_new",
+                              {"equipments": equipments})
 
-    # ------------------------------------------------------------------ #
-    #  Profil client – édition (on continue à modifier res.partner)
-    # ------------------------------------------------------------------ #
-    @http.route('/my/profile', type='http', auth='user',
-                website=True, methods=['GET', 'POST'])
-    def portal_profile(self, **post):
+    # ------------------------------------------------------------------
+    # Profil
+    # ------------------------------------------------------------------
+    @http.route("/my/profile", auth="user", methods=["GET", "POST"], website=True)
+    def my_profile(self, **post):
         partner = request.env.user.partner_id
-
-        if http.request.httprequest.method == 'POST':
+        if http.request.httprequest.method == "POST":
             partner.sudo().write({
-                'name':      post.get('name'),
-                'email':     post.get('email'),
-                'phone':     post.get('phone'),
-                'street':    post.get('street'),
-                'city':      post.get('city'),
-                'zip':       post.get('zip'),
-                'country_id': int(post.get('country_id'))
-                              if post.get('country_id') else False,
+                "name": post.get("name"),
+                "email": post.get("email"),
+                "phone": post.get("phone"),
+                "street": post.get("street"),
+                "city": post.get("city"),
+                "zip": post.get("zip"),
+                "country_id": int(post.get("country_id")) if post.get("country_id") else False,
             })
-            return request.redirect('/my')
+            return request.redirect("/my")
 
         countries = request.env['res.country'].sudo().search([])
-        return request.render('parc_portail_client.portal_my_profile',
-                              {'partner': partner, 'countries': countries})
+        return request.render("parc_portail_client.portal_my_profile",
+                              {"partner": partner, "countries": countries})

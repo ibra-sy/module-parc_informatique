@@ -1,0 +1,8 @@
+<odoo>
+    <menuitem id="menu_parc_root" name="Parc Informatique" sequence="10"/>
+    <menuitem id="menu_client_root" name="Clients" parent="menu_parc_root" action="parc_client.action_client" sequence="20"/>
+    <menuitem id="menu_contrat_root" name="Contrats" parent="menu_parc_root" action="parc_contrat.action_contrat" sequence="30"/>
+    <menuitem id="menu_equipement_root" name="Équipements" parent="menu_parc_root" action="parc_equipement.action_equipement" sequence="40"/>
+    <menuitem id="menu_facture_root" name="Factures" parent="menu_parc_root" action="parc_facturation.action_facture" sequence="50"/>
+    <menuitem id="menu_intervention_root" name="Interventions" parent="menu_parc_root" action="parc_intervention.action_intervention" sequence="60"/>
+</odoo>

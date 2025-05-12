@@ -1,5 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_equipement_portal,access.equipement.portal,parc_equipement.model_parc_equipement,base.group_portal,1,0,0,0
-access_contrat_portal,access.contrat.portal,parc_contrat.model_parc_contrat,base.group_portal,1,0,0,0
-access_facture_portal,access.facture.portal,parc_facturation.model_parc_facture,base.group_portal,1,0,0,0
-access_ticket_portal,access.ticket.portal,parc_intervention.model_parc_intervention,base.group_portal,1,0,1,0
+access_parc_client_portal,Client Portal,parc_client.model_parc_client,base.group_portal,1,0,0,0
+access_parc_equipement_portal,Equipement Portal,parc_equipement.model_parc_equipement,base.group_portal,1,0,0,0
+access_parc_contrat_portal,Contrat Portal,parc_contrat.model_parc_contrat,base.group_portal,1,0,0,0
+access_parc_facture_portal,Facture Portal,parc_facturation.model_parc_facture,base.group_portal,1,0,0,0
+access_parc_ticket_portal,Ticket Portal,parc_intervention.model_parc_intervention,base.group_portal,1,0,1,0
+access_website_portal,Website Portal,website.model_website,base.group_portal,1,0,0,0

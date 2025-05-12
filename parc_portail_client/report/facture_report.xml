@@ -1,13 +1,61 @@
 <odoo>
-  <template id="report_facture_portal" name="Facture (Portail)">
-    <t t-call="web.external_layout">
-      <div class="page">
-        <h2>Facture <t t-esc="doc.name"/></h2>
-        <p>Date : <t t-esc="doc.date_facture"/></p>
-        <p>Client : <t t-esc="doc.client_id.name"/></p>
-        <p>Montant : <t t-esc="doc.montant"/> XOF</p>
-        <p>Statut : <t t-esc="doc.etat"/></p>
-      </div>
-    </t>
-  </template>
+    <template id="report_facture_portal" name="Facture PDF – Portail">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <!-- En-tête de la Facture -->
+                <h2 style="text-align: center;">Facture <t t-esc="doc.name"/></h2>
+                <p><strong>Date :</strong> <t t-esc="doc.date_facture"/></p>
+                <p><strong>Client :</strong> <t t-esc="doc.client_id.name"/></p>
+                <p><strong>Adresse :</strong> <t t-esc="doc.client_id.street or ''"/> <t t-esc="doc.client_id.city or ''"/></p>
+                <p><strong>Email :</strong> <t t-esc="doc.client_id.email"/></p>
+                <p><strong>Téléphone :</strong> <t t-esc="doc.client_id.phone or ''"/></p>
+
+                <hr/>
+
+                <!-- Détails de la Facture -->
+                <h3>Détails de la Facture</h3>
+                <table class="table table-bordered" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Quantité</th>
+                            <th>Prix Unitaire (XOF)</th>
+                            <th>Montant (XOF)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="doc.invoice_line_ids" t-as="line">
+                            <tr>
+                                <td><t t-esc="line.name"/></td>
+                                <td><t t-esc="line.quantity"/></td>
+                                <td><t t-esc="line.price_unit"/></td>
+                                <td><t t-esc="line.price_subtotal"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <hr/>
+
+                <!-- Totaux -->
+                <div style="text-align: right;">
+                    <p><strong>Sous-total :</strong> <t t-esc="doc.amount_untaxed"/> XOF</p>
+                    <p><strong>Taxes :</strong> <t t-esc="doc.amount_tax"/> XOF</p>
+                    <p><strong>Total :</strong> <t t-esc="doc.amount_total"/> XOF</p>
+                </div>
+
+                <!-- Signature -->
+                <div style="margin-top: 30px;">
+                    <p><strong>Signature :</strong></p>
+                    <t t-if="doc.client_id.signature">
+                        <img t-att-src="'data:image/png;base64,%s' % doc.client_id.signature" 
+                             style="max-width: 200px; max-height: 100px;" alt="Signature Client"/>
+                    </t>
+                    <t t-else="">
+                        <p><i>Aucune signature disponible</i></p>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
 </odoo>

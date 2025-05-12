@@ -1,0 +1,19 @@
+<odoo>
+    <!-- Règle de lecture pour les Contrats (Utilisateurs peuvent lire uniquement leurs contrats) -->
+    <record id="rr_contrat_portal" model="ir.rule">
+        <field name="name">Contrats – Accès limité</field>
+        <field name="model_id" ref="model_parc_contrat"/>
+        <field name="domain_force">[('client_id.partner_id','=',user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+    </record>
+
+    <!-- Règle de lecture pour les Factures (Utilisateurs peuvent lire uniquement leurs factures) -->
+    <record id="rr_facture_portal" model="ir.rule">
+        <field name="name">Factures – Accès limité</field>
+        <field name="model_id" ref="model_parc_facture"/>
+        <field name="domain_force">[('client_id.partner_id','=',user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+    </record>
+</odoo>

@@ -12,12 +12,12 @@
     'author': 'SSIH',
     'website': 'https://tonsite.com',
     'license': 'LGPL-3',
-    'depends': ['base', 'mail'],
+    'depends': ['base', 'mail','auth_signup', ],
     'data': [
         'security/ir.model.access.csv',
         'views/client_views.xml',
     ],
-    'application': True,
+    'application': False,
     'installable': True,
     'auto_install': False,
 }

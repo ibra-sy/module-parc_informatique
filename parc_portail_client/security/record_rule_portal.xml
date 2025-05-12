@@ -1,0 +1,29 @@
+<odoo>
+  <record id="rr_equipement_portal" model="ir.rule">
+    <field name="name">Équipements – Portail</field>
+    <field name="model_id" ref="parc_equipement.model_parc_equipement"/>
+    <field name="domain_force">[('client_id.partner_id','=',user.partner_id.id)]</field>
+    <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+  </record>
+
+  <record id="rr_contrat_portal" model="ir.rule">
+    <field name="name">Contrats – Portail</field>
+    <field name="model_id" ref="parc_contrat.model_parc_contrat"/>
+    <field name="domain_force">[('client_id.partner_id','=',user.partner_id.id)]</field>
+    <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+  </record>
+
+  <record id="rr_facture_portal" model="ir.rule">
+    <field name="name">Factures – Portail</field>
+    <field name="model_id" ref="parc_facturation.model_parc_facture"/>
+    <field name="domain_force">[('client_id.partner_id','=',user.partner_id.id)]</field>
+    <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+  </record>
+
+  <record id="rr_ticket_portal" model="ir.rule">
+    <field name="name">Tickets – Portail</field>
+    <field name="model_id" ref="parc_intervention.model_parc_intervention"/>
+    <field name="domain_force">[('client_id.partner_id','=',user.partner_id.id)]</field>
+    <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+  </record>
+</odoo>

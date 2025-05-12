@@ -19,7 +19,7 @@
         'data/equipement_sequence.xml',
         'views/equipement_views.xml',
     ],
-    'application': True,
+    'application': False,
     'installable': True,
     'auto_install': False,
 }

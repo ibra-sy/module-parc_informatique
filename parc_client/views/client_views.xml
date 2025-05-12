@@ -1,61 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?> 
 <odoo>
-  <!-- MENU RACINE -->
-  <menuitem id="menu_parc_root" name="Parc Informatique" sequence="10"/>
+    <!-- Action fenêtre -->
+    <record id="action_client" model="ir.actions.act_window">
+        <field name="name">Clients</field>
+        <field name="res_model">parc.client</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
-  <!-- Action pour clients -->
-  <record id="action_client" model="ir.actions.act_window">
-    <field name="name">Clients</field>
-    <field name="res_model">parc.client</field>
-    <field name="view_mode">list,form</field>
-  </record>
+    <!-- ───────────── FORMULAIRE ───────────── -->
+    <record id="view_client_form" model="ir.ui.view">
+        <field name="name">parc.client.form</field>
+        <field name="model">parc.client</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" required="1"/>
+                        <field name="responsable"/>
+                        <field name="email"/>
+                        <field name="telephone"/>
+                        <field name="adresse"/>
+                        <field name="siret"/>
+                    </group>
 
-  <!-- Sous-menu client -->
-  <menuitem id="menu_parc_clients" name="Clients" parent="menu_parc_root" action="action_client"/>
+                    <notebook>
+                        <page string="Sites du client">
+                            <field name="site_ids"
+                                   context="{'default_client_id': id}">
+                                <form>
+                                    <group>
+                                        <field name="name" required="1"/>
+                                        <field name="adresse"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
 
-  <!-- Vue formulaire client -->
-  <record id="view_client_form" model="ir.ui.view">
-    <field name="name">parc.client.form</field>
-    <field name="model">parc.client</field>
-    <field name="arch" type="xml">
-      <form>
-        <sheet>
-          <group>
-            <field name="name"/>
-            <field name="responsable"/>
-            <field name="email"/>
-            <field name="telephone"/>
-            <field name="adresse"/>
-            <field name="siret"/>
-          </group>
-          <notebook>
-            <page string="Sites du client">
-              <field name="site_ids">
-                <form>
-                  <group>
-                    <field name="name"/>
-                    <field name="adresse"/>
-                  </group>
-                </form>
-              </field>
-            </page>
-          </notebook>
-        </sheet>
-        <chatter/>
-      </form>
-    </field>
-  </record>
-
-  <!-- Vue liste client -->
-  <record id="view_client_tree" model="ir.ui.view">
-    <field name="name">parc.client.tree</field>
-    <field name="model">parc.client</field>
-    <field name="arch" type="xml">
-      <list>
-        <field name="name"/>
-        <field name="responsable"/>
-        <field name="email"/>
-        <field name="telephone"/>
-      </list>
-    </field>
-  </record>
+    <!-- ───────────── LISTE ───────────── -->
+    <record id="view_client_tree" model="ir.ui.view">
+        <field name="name">parc.client.tree</field>
+        <field name="model">parc.client</field>
+        <field name="arch" type="xml">
+            <list string="Clients">
+                <field name="name"/>
+                <field name="responsable"/>
+                <field name="email"/>
+                <field name="telephone"/>
+            </list>
+        </field>
+    </record>
 </odoo>

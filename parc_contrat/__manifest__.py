@@ -11,7 +11,7 @@
         - Préparation à la facturation automatique
     """,
     'category': 'Services/Infogérance',
-    'author': 'Ton Nom',
+    'author': 'Sylla Dev',
     'website': 'https://tonsite.com',
     'license': 'LGPL-3',
     'depends': ['base', 'mail', 'parc_client', 'parc_equipement'],
@@ -21,6 +21,6 @@
         'data/contrat_sequence.xml',
 
     ],
-    'application': True,
+    'application': False,
     'installable': True,
 }
